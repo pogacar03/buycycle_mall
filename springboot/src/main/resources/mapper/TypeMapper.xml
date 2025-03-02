@@ -18,7 +18,7 @@
             <if test="description != null"> and description= #{description}</if>
             <if test="img != null"> and img= #{img}</if>
         </where>
-        order by id desc
+        order by id asc
     </select>
 
     <select id="selectById" resultType="com.example.entity.Type">
@@ -64,5 +64,9 @@
         </set>
         where id = #{id}
     </update>
+
+    <select id="getChildrenTypes" parameterType="java.lang.Integer" resultType="com.example.entity.Type">
+        SELECT * FROM categories WHERE parent_id = #{parentId}
+    </select>
 
 </mapper>

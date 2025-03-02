@@ -16,65 +16,45 @@ import java.util.List;
  * 公告信息表业务处理
  **/
 @Service
-public class TypeService {
-
-    @Resource
-    private TypeMapper typeMapper;
+public interface TypeService {
 
     /**
      * 新增
      */
-    public void add(Type type) {
-
-
-
-        typeMapper.insert(type);
-    }
+    void add(Type type);
 
     /**
      * 删除
      */
-    public void deleteById(Integer id) {
-        typeMapper.deleteById(id);
-    }
+    void deleteById(Integer id);
 
     /**
      * 批量删除
      */
-    public void deleteBatch(List<Integer> ids) {
-        for (Integer id : ids) {
-            typeMapper.deleteById(id);
-        }
-    }
+    void deleteBatch(List<Integer> ids);
 
     /**
      * 修改
      */
-    public void updateById(Type type) {
-        typeMapper.updateById(type);
-    }
+    void updateById(Type type);
 
     /**
      * 根据ID查询
      */
-    public Type selectById(Integer id) {
-        return typeMapper.selectById(id);
-    }
+    Type selectById(Integer id);
 
     /**
      * 查询所有
      */
-    public List<Type> selectAll(Type type) {
-        return typeMapper.selectAll(type);
-    }
+    List<Type> selectAll(Type type);
 
     /**
      * 分页查询
      */
-    public PageInfo<Type> selectPage(Type type, Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Type> list = typeMapper.selectAll(type);
-        return PageInfo.of(list);
-    }
+    PageInfo<Type> selectPage(Type type, Integer pageNum, Integer pageSize);
 
+    /**
+     * 获取某个分类的所有子分类
+     */
+    List<Type> getChildrenTypes(Integer parentId);
 }

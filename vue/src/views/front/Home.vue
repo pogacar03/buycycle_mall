@@ -1,6 +1,13 @@
 <template>
 <div class="main-content">
-<div style="height: 60px; background-color: #C566F6FF"></div>
+<!-- 顶端分隔行 -->
+<div style="color: #ffffff; height: 60px; background-color: #e60012; 
+            text-align: center; display: flex; align-items: center; justify-content: center;
+            font-size: 18px;">
+    郑重提醒:为保护您的消费权益，
+    请不要在未经授权的线上或线下渠道购买 Trek 及 Bontrager 商品，否则可能存在严重质量缺陷，也无法享受相关售后保修政策。
+</div>
+
 <div style="display: flex">
   <div class="left"></div>
   <div style="width: 66%; background-color: white; height: 1000px">
@@ -204,12 +211,12 @@ export default {
 .left {
   width: 17%;
   background-repeat: no-repeat;
-  background-image: url('@/assets/imgs/left-img.png');
+  background-image: url('@/assets/imgs/img.png');
 }
 .right {
   width: 17%;
   background-repeat: no-repeat;
-  background-image: url('@/assets/imgs/right-img.png')
+  background-image: url('@/assets/imgs/img.png')
 }
 .el-col-5{
   width: 20%;

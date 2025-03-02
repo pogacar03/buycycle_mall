@@ -84,4 +84,13 @@ public class TypeController {
         return Result.success(page);
     }
 
+    /**
+     * 获取某个分类的所有子分类
+     */
+    @GetMapping("/children/{parentId}")
+    public Result getChildrenTypes(@PathVariable Integer parentId) {
+        List<Type> children = typeService.getChildrenTypes(parentId);
+        return Result.success(children);
+    }
+
 }

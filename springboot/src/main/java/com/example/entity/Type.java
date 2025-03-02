@@ -1,6 +1,7 @@
 package com.example.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 公告信息表
@@ -20,6 +21,31 @@ public class Type implements Serializable {
      * 分类图标
      */
     private String img;
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public List<Type> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Type> children) {
+        this.children = children;
+    }
+
+    /**
+     * 父分类ID
+     */
+    private Integer parentId;
+    /**
+     * 子分类列表
+     */
+    private List<Type> children;
 
     public Integer getId() {
         return id;

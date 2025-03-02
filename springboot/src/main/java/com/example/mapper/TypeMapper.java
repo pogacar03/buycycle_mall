@@ -34,4 +34,5 @@ public interface TypeMapper {
     */
     List<Type> selectAll(Type type);
 
+    List<Type> getChildrenTypes(Integer parentId);
 }
