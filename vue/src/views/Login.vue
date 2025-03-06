@@ -1,30 +1,53 @@
 <template>
   <div class="container">
-    <div style="width: 400px; padding: 30px; background-color: white; border-radius: 5px;">
-      <div style="text-align: center; font-size: 20px; margin-bottom: 20px; color: #333">欢迎登录自行车交易平台</div>
-      <el-form :model="form" :rules="rules" ref="formRef">
+    <div class="login-box">
+      <div class="login-header">
+        <img src="@/assets/imgs/logo.png" alt="logo" class="logo">
+        <h2>自行车交易平台</h2>
+        <p>骑行生活，从这里开始</p>
+      </div>
+      
+      <el-form :model="form" :rules="rules" ref="formRef" class="login-form">
         <el-form-item prop="username">
-          <el-input prefix-icon="el-icon-user" placeholder="请输入账号" v-model="form.username"></el-input>
+          <el-input 
+            prefix-icon="el-icon-user" 
+            placeholder="请输入账号" 
+            v-model="form.username"
+            class="custom-input">
+          </el-input>
         </el-form-item>
+        
         <el-form-item prop="password">
-          <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" show-password  v-model="form.password"></el-input>
+          <el-input 
+            prefix-icon="el-icon-lock" 
+            placeholder="请输入密码" 
+            show-password  
+            v-model="form.password"
+            class="custom-input">
+          </el-input>
         </el-form-item>
+        
         <el-form-item>
-          <el-select v-model="form.role" placeholder="请选择角色" style="width: 100%">
+          <el-select 
+            v-model="form.role" 
+            placeholder="请选择角色" 
+            class="custom-select">
             <el-option label="管理员" value="ADMIN"></el-option>
             <el-option label="商家" value="BUSINESS"></el-option>
             <el-option label="用户" value="USER"></el-option>
           </el-select>
         </el-form-item>
+        
         <el-form-item>
-          <el-button style="width: 100%; background-color: #AF3939FF; border-color: #AF3939FF; color: white" @click="login">登 录</el-button>
+          <el-button type="primary" class="login-btn" @click="login">
+            登 录
+          </el-button>
         </el-form-item>
-        <div style="display: flex; align-items: center">
-          <div style="flex: 1"></div>
-          <div style="flex: 1; text-align: right">
-            还没有账号？请 <a href="/register">注册</a>
-         </div>
-       </div>
+        
+        <div class="form-footer">
+          <span>还没有账号？</span>
+          <a href="/register" class="register-link">立即注册</a>
+        </div>
       </el-form>
     </div>
   </div>
@@ -35,30 +58,32 @@ export default {
   name: "Login",
   data() {
     return {
-      form: { },
+      form: {},
       rules: {
-        username: [{ required: true, message: '请输入账号', trigger: 'blur' },],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' },],
-        role: [{ required: true, message: '请选择角色', trigger: 'blur' },],
+        username: [
+          { required: true, message: '请输入账号', trigger: 'blur' },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+        ],
+        role: [
+          { required: true, message: '请选择角色', trigger: 'blur' },
+        ],
       }
     }
   },
-  created() {
-
-  },
-methods: {
+  methods: {
     login() {
       this.$refs['formRef'].validate((valid) => {
         if (valid) {
-          // 验证通过
           this.$request.post('/login', this.form).then(res => {
             if (res.code === '200') {
-              let user =res.data
-              localStorage.setItem("xm-user", JSON.stringify(res.data))  // 存储用户数据
-              if (user.role==='USER'){
-                 location.href ='/front/home'
-              }else {
-                location.href ='/home'
+              let user = res.data
+              localStorage.setItem("xm-user", JSON.stringify(res.data))
+              if (user.role === 'USER') {
+                location.href = '/front/home'
+              } else {
+                location.href = '/home'
               }
               this.$message.success('登录成功')
             } else {
@@ -74,16 +99,112 @@ methods: {
 
 <style scoped>
 .container {
-  height: 100vh;
-  overflow: hidden;
-  background-image: url("@/assets/imgs/bg.jpg");
-  background-size: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
 }
-a {
-  color: #2a60c9;
+
+.login-box {
+  width: 420px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(4px);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 15px;
+}
+
+.login-header h2 {
+  color: #2c3e50;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.login-header p {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.custom-input :deep(.el-input__inner) {
+  height: 45px;
+  line-height: 45px;
+  border-radius: 8px;
+  border: 1px solid #dcdfe6;
+  transition: all 0.3s;
+}
+
+.custom-input :deep(.el-input__inner):focus {
+  border-color: #409EFF;
+  box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+}
+
+.custom-select {
+  width: 100%;
+}
+
+.custom-select :deep(.el-input__inner) {
+  height: 45px;
+  line-height: 45px;
+  border-radius: 8px;
+}
+
+.login-btn {
+  width: 100%;
+  height: 45px;
+  border-radius: 8px;
+  font-size: 16px;
+  letter-spacing: 2px;
+  background: linear-gradient(to right, #04BF04, #2ecc71);
+  border: none;
+  transition: all 0.3s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.form-footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.register-link {
+  color: #04BF04;
+  text-decoration: none;
+  margin-left: 5px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.register-link:hover {
+  color: #2ecc71;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .login-box {
+    width: 100%;
+    padding: 30px 20px;
+  }
 }
 </style>

@@ -1,126 +1,131 @@
 <template>
-<div class="main-content">
-<!-- 顶端分隔行 -->
-<div style="color: #ffffff; height: 60px; background-color: #e60012; 
-            text-align: center; display: flex; align-items: center; justify-content: center;
-            font-size: 18px;">
-    郑重提醒:为保护您的消费权益，
-    请不要在未经授权的线上或线下渠道购买 Trek 及 Bontrager 商品，否则可能存在严重质量缺陷，也无法享受相关售后保修政策。
-</div>
+  <div class="main-content">
+    <div class="main-container">
+      <div class="content-wrapper">
+        <!-- 主题市场标题 -->
+        <div class="section-title">
+          <i class="el-icon-shopping-bag-1"></i>
+          主题市场
+        </div>
 
-<div style="display: flex">
-  <div class="left"></div>
-  <div style="width: 66%; background-color: white; height: 1000px">
-    <div style="color: #FE0137FF; margin: 15px 0 15px 18px; font-weight: bold; font-size: 16px">主题市场</div>
-    <div style="display: flex; margin: 0 25px; height: 550px">
-      <div style="flex: 2">
-        <div style="display: flex; color: #666666FF; margin: 14px 0" v-for="item in typeData">
-          <img :src="item.img" alt="" style="height: 20px; width: 20px">
-          <div style="margin-left: 10px; font-size: 14px"><a href="#"@click="navTo('/front/type?id=' + item.id) ">{{item.name}}</a></div>
-        </div>
-      </div>
-      <div style="flex: 5; margin-top: 15px">
-        <div>
-          <el-carousel height="300px" style="border-radius: 10px">
-            <el-carousel-item v-for="item in carousel_top">
-              <img :src="item" alt="" style="width: 100%; height: 300px; border-radius: 10px">
-            </el-carousel-item>
-          </el-carousel>
-        </div>
-        <div style="margin-top: 30px; display: flex">
-          <div style="flex: 1">
-            <el-carousel height="300px" style="border-radius: 10px">
-              <el-carousel-item v-for="item in carousel_left">
-                <img :src="item" alt="" style="width: 100%; height: 200px; border-radius: 10px">
+        <div class="main-content-area">
+          <!-- 左侧分类菜单 -->
+          <div class="category-menu">
+            <div class="category-item" v-for="item in typeData" :key="item.id" @click="navTo('/front/type?id=' + item.id)">
+              <span>{{item.name}}</span>
+            </div>
+          </div>
+
+          <!-- 中间轮播区域 -->
+          <div class="carousel-section">
+            <!-- 顶部大轮播图 -->
+            <el-carousel height="300px" class="main-carousel" indicator-position="outside">
+              <el-carousel-item v-for="(item, index) in carousel_top" :key="index">
+                <img :src="item" alt="carousel">
               </el-carousel-item>
             </el-carousel>
+            
+            <!-- 下方小轮播图 -->
+            <div class="sub-carousel-container">
+              <el-carousel height="200px" class="sub-carousel" :interval="4000">
+                <el-carousel-item v-for="(item, index) in carousel_left" :key="index">
+                  <img :src="item" alt="carousel">
+                </el-carousel-item>
+              </el-carousel>
+              <el-carousel height="200px" class="sub-carousel" :interval="4500">
+                <el-carousel-item v-for="(item, index) in carousel_right" :key="index">
+                  <img :src="item" alt="carousel">
+                </el-carousel-item>
+              </el-carousel>
+            </div>
           </div>
-          <div style="flex: 1; margin-left: 5px">
-            <el-carousel height="300px" style="border-radius: 10px">
-              <el-carousel-item v-for="item in carousel_right">
-                <img :src="item" alt="" style="width: 100%; height: 200px; border-radius: 10px">
-              </el-carousel-item>
-            </el-carousel>
+
+          <!-- 右侧用户信息区 -->
+          <div class="user-panel">
+            <div class="user-info" v-if="user.username">
+              <img @click="navTo('/front/person')" :src="user.avatar" :alt="user.name">
+              <div class="welcome">Hi，{{user.name}}</div>
+              <el-button type="text" class="logout-btn" @click="handleLogout">
+                <i class="el-icon-switch-button"></i> 退出登录
+              </el-button>
+            </div>
+            <div class="user-info" v-else>
+              <div class="login-tips">
+                <el-button type="primary" @click="navTo('/login')">登录</el-button>
+                <el-button @click="navTo('/register')">注册</el-button>
+              </div>
+            </div>
+
+            <div class="promo-banner">
+              <img src="@/assets/imgs/right.png" alt="promotion">
+            </div>
+
+            <div class="quick-actions">
+              <div class="action-item" @click="navTo('/front/collect')">
+                <i class="el-icon-star-off"></i>
+                <span>我的收藏</span>
+              </div>
+              <div class="action-item" @click="navTo('/front/address')">
+                <i class="el-icon-location"></i>
+                <span>我的地址</span>
+              </div>
+              <div class="action-item" @click="navTo('/front/cart')">
+                <i class="el-icon-shopping-cart-1"></i>
+                <span>购物车</span>
+              </div>
+              <div class="action-item" @click="navTo('/front/orders')">
+                <i class="el-icon-document"></i>
+                <span>我的订单</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div style="flex: 3; background-color: #F3F3F3FF; margin-top: 15px; margin-left: 15px; border-radius: 10px">
-        <div style="text-align: center; margin-top: 30px">
-          <img @click="navTo('/front/person')" :src="user.avatar" alt="" style="width: 80px; height: 80px; border-radius: 50%">
-          <div style="margin-top: 10px">Hi，{{user.name}}</div>
-        </div>
-        <div style="margin-top: 20px; padding: 0 15px">
-          <img src="@/assets/imgs/right.png" alt="" style="height: 150px; width: 100%; border-radius: 20px">
-        </div>
-        <div style="margin: 20px 10px 10px 10px; width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
-          <i class="el-icon-bell"></i>
-          <span style="font-weight: bold">公告</span>
-          <span style="color: #666666;">：{{ top }}</span>
-        </div>
-        <div style="display: flex; margin-top: 50px">
-          <div style="flex: 1; text-align: center">
-            <a href="#" @click="navTo('/front/collect')">
-              <img src="@/assets/imgs/收藏.png" alt="" style="height: 25px; width: 25px">
-              <div>我的收藏</div>
-            </a>
+
+        <!-- 热卖商品区域 -->
+        <div class="section-block">
+          <div class="section-header">
+            <i class="el-icon-hot-water"></i>
+            热卖商品
           </div>
-          <div style="flex: 1; text-align: center">
-            <a href="#" @click="navTo('/front/address')">
-              <img src="@/assets/imgs/店铺.png" alt="" style="height: 25px; width: 25px">
-              <div>我的地址</div>
-            </a>
+          <div class="goods-grid">
+            <div v-for="item in goodsData" :key="item.id" class="goods-card" @click="navTo('/front/detail?id=' + item.id)">
+              <div class="goods-img">
+                <img :src="item.img" :alt="item.name">
+              </div>
+              <h3>{{item.name}}</h3>
+              <div class="price">￥{{item.price}} / {{item.unit}}</div>
+            </div>
           </div>
-          <div style="flex: 1; text-align: center">
-            <a href="#" @click="navTo('/front/cart')">
-              <img src="@/assets/imgs/购物车.png" alt="" style="height: 25px; width: 25px">
-              <div>我的购物车</div>
-            </a>
+        </div>
+
+        <!-- 猜你喜欢区域 -->
+        <div class="section-block">
+          <div class="section-header">
+            <i class="el-icon-magic-stick"></i>
+            猜你喜欢
           </div>
-          <div style="flex: 1; text-align: center">
-            <a href="#" @click="navTo('/front/orders')">
-              <img src="@/assets/imgs/订单.png" alt="" style="height: 25px; width: 25px">
-              <div>我的订单</div>
-            </a>
+          <div class="goods-grid">
+            <div v-for="item in recommendData" :key="item.id" class="goods-card" @click="navTo('/front/detail?id=' + item.id)">
+              <div class="goods-img">
+                <img :src="item.img" :alt="item.name">
+              </div>
+              <h3>{{item.name}}</h3>
+              <div class="price">￥{{item.price}} / {{item.unit}}</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-          <div style="margin: 40px 0 0 15px; height: 40px; background-color: #04BF04FF; font-size: 20px; color: white; width: 130px; font-weight: bold; line-height: 40px; text-align: center; border-radius: 20px">热卖商品</div>
-          <div style="margin: 10px 5px 0 5px">
-            <el-row>
-              <el-col :span="5" v-for="item in goodsData">
-                <img @click="navTo('/front/detail?id=' + item.id)":src="item.img" alt="" style="width: 100%; height: 175px; border-radius: 10px; border: #cccccc 1px solid">
-                <div style="margin-top: 10px; font-weight: 500; font-size: 16px; width: 180px; color: #000000FF; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{item.name}}</div>
-                <div style="margin-top: 5px; font-size: 20px; color: #FF5000FF">￥ {{item.price}} / {{item.unit}}</div>
-              </el-col>
-            </el-row>
-            <div style="margin: 40px 0 0 15px; height: 40px; background-color: #04BF04FF; font-size: 20px; color: white; width: 130px; font-weight: bold; line-height: 40px; text-align: center; border-radius: 20px">猜你喜欢</div>
-            <div style="margin: 10px 5px 0 5px">
-              <el-row>
-                <el-col :span="5" v-for="item in recommendData">
-                  <img @click="navTo('/front/detail?id=' + item.id)":src="item.img" alt="" style="width: 100%; height: 175px; border-radius: 10px; border: #cccccc 1px solid">
-                  <div style="margin-top: 10px; font-weight: 500; font-size: 16px; width: 180px; color: #000000FF; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{item.name}}</div>
-                  <div style="margin-top: 5px; font-size: 20px; color: #FF5000FF">￥ {{item.price}} / {{item.unit}}</div>
-                </el-col>
-              </el-row>
-          </div>
-        </div>
-        </div>
-        <div class="right"></div>
   </div>
-</div>
- </template>
+</template>
 
-    <script>
-
+<script>
 export default {
-
+  name: 'Home',
   data() {
     return {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       typeData: [],
-      top: null,
-      notice: [],
       goodsData: [],
       recommendData: [],
       carousel_top: [
@@ -142,19 +147,17 @@ export default {
   },
   mounted() {
     this.loadType()
-    this.loadNotice()
     this.loadGoods()
     this.loadRecommend()
   },
-  // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
-    loadRecommend(){
-      this.$request.get('/goods/recommend').then(res =>{
-            if (res.code === '200') {
-              this.recommendData = res.data
-            } else {
-              this.$message.error(res.msg)
-            }
+    loadRecommend() {
+      this.$request.get('/goods/recommend').then(res => {
+        if (res.code === '200') {
+          this.recommendData = res.data
+        } else {
+          this.$message.error(res.msg)
+        }
       })
     },
     loadType() {
@@ -166,25 +169,6 @@ export default {
         }
       })
     },
-    loadNotice() {
-      this.$request.get('/notice/selectAll').then(res => {
-        this.notice = res.data
-        let i = 0
-        if (this.notice && this.notice.length) {
-          this.top = this.notice[0].content
-          setInterval(() => {
-            this.top = this.notice[i].content
-            i++
-            if (i === this.notice.length) {
-              i = 0
-            }
-          }, 2500)
-        }
-      })
-    },
-    navToPerson() {
-      location.href = '/front/person'
-    },
     loadGoods() {
       this.$request.get('/goods/selectTop15').then(res => {
         if (res.code === '200') {
@@ -194,33 +178,311 @@ export default {
         }
       })
     },
+    handleLogout() {
+      this.$confirm('确认退出登录吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.removeItem('xm-user')
+        this.$message.success('退出成功')
+        this.navTo('/login')
+      }).catch(() => {})
+    },
     navTo(url) {
       location.href = url
-    },
+    }
   }
 }
 </script>
-
 <style scoped>
 .main-content {
   min-height: 100vh;
-  /*overflow: hidden;*/
-  background-size: 100%;
-  background-image: url('@/assets/imgs/img.png');
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 40px;
 }
-.left {
-  width: 17%;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/imgs/img.png');
+
+.main-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
 }
-.right {
-  width: 17%;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/imgs/img.png')
+
+.content-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 25px;
+  margin-top: 20px;
 }
-.el-col-5{
-  width: 20%;
-  max-width: 20%;
-  padding: 10px 10px;
+
+.section-title {
+  color: #2c3e50;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e8e8e8;
+}
+
+.main-content-area {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.category-menu {
+  width: 220px;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.category-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 8px;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.category-item:hover {
+  background: #f0f2f5;
+  color: #04BF04;
+}
+
+.carousel-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.main-carousel {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.main-carousel :deep(.el-carousel__item) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sub-carousel-container {
+  display: flex;
+  gap: 20px;
+}
+
+.sub-carousel {
+  flex: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.sub-carousel :deep(.el-carousel__item) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-panel {
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.user-info {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.user-info img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.user-info img:hover {
+  transform: scale(1.05);
+}
+
+.welcome {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.login-tips {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.logout-btn {
+  color: #ff4757;
+}
+
+.promo-banner {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.promo-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.quick-actions {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.action-item:hover {
+  background: #f0f2f5;
+  color: #04BF04;
+}
+
+.action-item i {
+  font-size: 24px;
+}
+
+.section-block {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.goods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.goods-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 1px solid #eee;
+}
+
+.goods-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.goods-img {
+  position: relative;
+  padding-top: 100%;
+}
+
+.goods-img img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.goods-card h3 {
+  margin: 10px;
+  font-size: 14px;
+  color: #2c3e50;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price {
+  margin: 10px;
+  color: #ff5000;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+@media (max-width: 1200px) {
+  .main-content-area {
+    flex-direction: column;
+  }
+  
+  .category-menu {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .user-panel {
+    width: 100%;
+  }
+  
+  .quick-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .sub-carousel-container {
+    flex-direction: column;
+  }
+  
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .goods-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 </style>

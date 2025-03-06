@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.common.Result;
 import com.example.entity.Goods;
 import com.example.service.GoodsService;
@@ -109,5 +110,5 @@ public Result selectTop15() {
         PageInfo<Goods> page = goodsService.selectPage(goods, pageNum, pageSize);
         return Result.success(page);
     }
-
+   
 }
