@@ -3,7 +3,7 @@
     <div class="login-box">
       <div class="login-header">
         <img src="@/assets/imgs/logo.png" alt="logo" class="logo">
-        <h2>自行车交易平台</h2>
+        <h2>buycycle交易平台</h2>
         <p>骑行生活，从这里开始</p>
       </div>
       

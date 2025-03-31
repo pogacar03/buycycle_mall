@@ -113,4 +113,7 @@ public class Goods implements Serializable {
     public void setCount(Integer count) {
         this.count = count;
     }
+
+
+
 }

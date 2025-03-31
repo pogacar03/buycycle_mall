@@ -30,5 +30,8 @@ pagehelper:
 
 ip: localhost
 
+# 通义千问API配置
 dashscope:
-  api-key: sk-0234ae307b064bc78a4f2ad53adc50cd
+  api:
+    key: sk-0234ae307b064bc78a4f2ad53adc50cd
+

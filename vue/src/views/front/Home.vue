@@ -56,9 +56,7 @@
               </div>
             </div>
 
-            <div class="promo-banner">
-              <img src="@/assets/imgs/right.png" alt="promotion">
-            </div>
+            
 
             <div class="quick-actions">
               <div class="action-item" @click="navTo('/front/collect')">

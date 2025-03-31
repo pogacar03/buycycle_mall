@@ -4,7 +4,7 @@
     <div class="manager-header">
       <div class="manager-header-left">
         <img src="@/assets/imgs/logo.png" style="border-radius: 10px"/>
-        <div class="title">BuyCycle商城后台管理</div>
+        <div class="title">后台管理</div>
       </div>
 
       <div class="manager-header-center">

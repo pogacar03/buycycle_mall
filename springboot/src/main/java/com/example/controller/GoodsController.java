@@ -110,5 +110,5 @@ public Result selectTop15() {
         PageInfo<Goods> page = goodsService.selectPage(goods, pageNum, pageSize);
         return Result.success(page);
     }
-   
+
 }

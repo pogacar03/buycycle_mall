@@ -3,7 +3,7 @@
     <div class="register-box">
       <div class="register-header">
         <img src="@/assets/imgs/logo.png" alt="logo" class="logo">
-        <h2>欢迎加入自行车交易平台</h2>
+        <h2>欢迎加入buycycle交易平台</h2>
         <p>开启您的骑行之旅</p>
       </div>
       

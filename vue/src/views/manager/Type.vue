@@ -12,19 +12,11 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
+      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="name" label="分类名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="description" label="分类描述" show-overflow-tooltip></el-table-column>
-        <el-table-column label="分类图标">
-          <template v-slot="scope">
-            <div style="display: flex; align-items: center">
-              <el-image style="width: 40px; height: 40px; " v-if="scope.row.img"
-                        :src="scope.row.img" :preview-src-list="[scope.row.img]"></el-image>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini">编辑</el-button>
@@ -46,7 +38,6 @@
       </div>
     </div>
 
-
     <el-dialog title="信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
         <el-form-item prop="name" label="分类名称">
@@ -55,25 +46,12 @@
         <el-form-item prop="description" label="分类描述">
           <el-input v-model="form.description" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类图标">
-          <el-upload
-              class="avatar-uploader"
-              :action="$baseUrl + '/files/upload'"
-              :headers="{ token: user.token }"
-              list-type="picture"
-              :on-success="handleAvatarSuccess"
-          >
-            <el-button type="primary">上传图标</el-button>
-          </el-upload>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="fromVisible = false">取 消</el-button>
         <el-button type="primary" @click="save">确 定</el-button>
       </div>
     </el-dialog>
-
-
   </div>
 </template>
 
@@ -91,11 +69,11 @@ export default {
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
-        title: [
-          {required: true, name: '请输入分类名称', trigger: 'blur'},
+        name: [
+          {required: true, message: '请输入分类名称', trigger: 'blur'},
         ],
-        content: [
-          {required: true, img: '请输上传分类图标', trigger: 'blur'},
+        description: [
+          {required: true, message: '请输入分类描述', trigger: 'blur'},
         ]
       },
       ids: []
@@ -184,14 +162,23 @@ export default {
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
-    },
-    handleAvatarSuccess(response, file, fileList) {
-      this.form.img = response.data
-    },
+    }
   }
 }
 </script>
 
 <style scoped>
+.search {
+  margin: 10px 0;
+}
 
+.operation {
+  margin: 10px 0;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
 </style>
