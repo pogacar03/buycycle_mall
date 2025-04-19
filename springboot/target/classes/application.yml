@@ -12,6 +12,8 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+      # 在您的 application.yml 中添加以下配置
+
 
 # 配置mybatis实体和xml映射
 mybatis:
@@ -35,3 +37,10 @@ dashscope:
   api:
     key: sk-0234ae307b064bc78a4f2ad53adc50cd
 
+alipay:
+  appId: 2021000148613275
+  privateKey: 你的私钥
+  publicKey: 支付宝公钥
+  notifyUrl: http://你的域名/api/alipay/notify
+  returnUrl: http://你的域名/api/alipay/return
+  gateway: https://openapi.alipaydev.com/gateway.do

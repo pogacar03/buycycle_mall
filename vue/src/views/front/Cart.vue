@@ -34,12 +34,12 @@
                 </template>
               </el-table-column>
               <el-table-column prop="goodsPrice" label="商品价格"></el-table-column>
-              <el-table-column prop="num" label="选择数量">
+              <el-table-column prop="num" label="选择数量" width="100px">
                 <template v-slot="scope">
-                  <el-input-number v-model="scope.row.num" style="width: 100px" @change="handleChange(scope.row)" :min="1"></el-input-number>
+                  <el-input-number v-model="scope.row.num" style="width: 90px" @change="handleChange(scope.row)" :min="1"></el-input-number>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" align="center" width="180">
+              <el-table-column label="操作" align="center" width="160">
                 <template v-slot="scope">
                   <el-button size="mini" type="danger" plain @click="del(scope.row.id)">移除购物车</el-button>
                 </template>

@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 订单信息表
-*/
+ */
 public class Orders implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,6 @@ public class Orders implements Serializable {
 
     private List<Cart> cartData;
 
-
     private String businessName;
     private String goodsName;
     private String goodsImg;
@@ -31,6 +30,9 @@ public class Orders implements Serializable {
     private String username;
     private String useraddress;
     private String phone;
+
+    // 添加returnStatus字段
+    private String returnStatus;
 
     public Integer getId() {
         return id;
@@ -175,8 +177,13 @@ public class Orders implements Serializable {
     public void setUseraddress(String useraddress) {
         this.useraddress = useraddress;
     }
+
+    // 添加getter和setter
+    public String getReturnStatus() {
+        return returnStatus == null ? "0" : returnStatus; // 默认值处理
+    }
+
+    public void setReturnStatus(String returnStatus) {
+        this.returnStatus = returnStatus;
+    }
 }
-
-
-
-

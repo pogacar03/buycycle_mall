@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 收藏业务处理
@@ -49,10 +50,10 @@ public class OrdersService {
 
             // 把购物车里对应的商品删掉
             cartMapper.deleteById(cart.getId());
-//            增加销量
-           Goods goods = goodsMapper.selectById(cart.getGoodsId());
-           goods.setCount(goods.getCount() + cart.getNum());
-           goodsMapper.updateById(goods);
+            // 增加销量
+            Goods goods = goodsMapper.selectById(cart.getGoodsId());
+            goods.setCount(goods.getCount() + cart.getNum());
+            goodsMapper.updateById(goods);
         }
     }
 
@@ -96,16 +97,15 @@ public class OrdersService {
     /**
      * 分页查询
      */
-    public PageInfo<Orders> selectPage(Orders orders, Integer pageNum, Integer pageSize) {
-        Account currentUser = TokenUtils.getCurrentUser();
-        if (RoleEnum.USER.name().equals(currentUser.getRole())) {
-            orders.setUserId(currentUser.getId());
-        }
-        if (RoleEnum.BUSINESS.name().equals(currentUser.getRole())) {
-            orders.setBusinessId(currentUser.getId());
-        }
+    public PageInfo<Map<String, Object>> selectPage(Integer pageNum, Integer pageSize, Integer userId) {
         PageHelper.startPage(pageNum, pageSize);
-        List<Orders> list = ordersMapper.selectAll(orders);
-        return PageInfo.of(list);
+        List<Map<String, Object>> orders = ordersMapper.selectByUserId(userId);
+        return new PageInfo<>(orders);
+    }
+
+    public PageInfo<Map<String, Object>> selectPageForBusiness(Integer pageNum, Integer pageSize, Integer businessId) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Map<String, Object>> orders = ordersMapper.selectByBusinessId(businessId);
+        return new PageInfo<>(orders);
     }
 }

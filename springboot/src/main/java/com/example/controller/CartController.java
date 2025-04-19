@@ -24,7 +24,7 @@ public class CartController {
      */
     @PostMapping("/add")
     public Result add(@RequestBody  Cart  cart) {
-         cartService.add( cart);
+        cartService.add( cart);
         return Result.success();
     }
 
@@ -33,7 +33,7 @@ public class CartController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-         cartService.deleteById(id);
+        cartService.deleteById(id);
         return Result.success();
     }
 
@@ -42,7 +42,7 @@ public class CartController {
      */
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
-         cartService.deleteBatch(ids);
+        cartService.deleteBatch(ids);
         return Result.success();
     }
 
@@ -51,7 +51,7 @@ public class CartController {
      */
     @PutMapping("/update")
     public Result updateById(@RequestBody  Cart  cart) {
-         cartService.updateById( cart);
+        cartService.updateById( cart);
         return Result.success();
     }
 
@@ -60,7 +60,7 @@ public class CartController {
      */
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
-         Cart  cart =  cartService.selectById(id);
+        Cart  cart =  cartService.selectById(id);
         return Result.success( cart);
     }
 
@@ -78,8 +78,8 @@ public class CartController {
      */
     @GetMapping("/selectPage")
     public Result selectPage( Cart  cart,
-                             @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
+                              @RequestParam(defaultValue = "1") Integer pageNum,
+                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo< Cart> page =  cartService.selectPage( cart, pageNum, pageSize);
         return Result.success(page);
     }

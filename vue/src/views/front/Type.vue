@@ -11,10 +11,11 @@
             clearable
             @keyup.enter.native="handleSearch"
           >
-            <el-button 
-              slot="append" 
+            <el-button
+              slot="append"
               icon="el-icon-search"
-              @click="handleSearch">
+              @click="handleSearch"
+            >
               搜索
             </el-button>
           </el-input>
@@ -42,10 +43,11 @@
           <div class="filter-section">
             <h3>品牌</h3>
             <el-checkbox-group v-model="selectedBrands" @change="handleFilter">
-              <el-checkbox 
-                v-for="brand in availableBrands" 
-                :key="brand" 
-                :label="brand">
+              <el-checkbox
+                v-for="brand in availableBrands"
+                :key="brand"
+                :label="brand"
+              >
                 {{ brand }}
               </el-checkbox>
             </el-checkbox-group>
@@ -69,24 +71,23 @@
         <div class="goods-container">
           <div class="goods-header">
             <h2>{{ categoryName }}</h2>
-            <span class="goods-count">共 {{ filteredGoods.length }} 个商品</span>
+            <span class="goods-count"
+              >共 {{ filteredGoods.length }} 个商品</span
+            >
           </div>
 
           <div class="goods-grid">
-            <div 
-              v-for="item in filteredGoods" 
-              :key="item.id" 
+            <div
+              v-for="item in filteredGoods"
+              :key="item.id"
               class="goods-card"
               @click="navTo('/front/detail?id=' + item.id)"
             >
               <div class="goods-img">
-                <img :src="item.img" :alt="item.name">
+                <img :src="item.img" :alt="item.name" />
               </div>
               <div class="goods-info">
                 <h3>{{ item.name }}</h3>
-                <p class="goods-desc" v-if="item.description && !isImageUrl(item.description)">
-                  {{ item.description }}
-                </p>
                 <div class="price">¥{{ item.price }}</div>
               </div>
             </div>
@@ -105,133 +106,135 @@
 
 <script>
 export default {
-  name: 'Type',
+  name: "Type",
   data() {
     return {
       categoryId: null,
-      categoryName: '商品分类',
+      categoryName: "商品分类",
       goods: [],
       originalGoods: [],
       filteredGoods: [],
-      searchKeyword: '',
+      searchKeyword: "",
       priceRange: [0, 50000],
       selectedBrands: [],
-      sortBy: 'default',
+      sortBy: "default",
       // 定义品牌关键词列表
       brandKeywords: {
-        'Specialized': 'specialized',
-        'Trek': 'trek',
-        'Giant': 'giant',
-        'Cannondale': 'cannondale',
-        'Scott': 'scott',
-        'Merida': 'merida',
-        'BMC': 'bmc'
-      }
-    }
+        Specialized: "specialized",
+        Trek: "trek",
+        Giant: "giant",
+        Cannondale: "cannondale",
+        Scott: "scott",
+        Merida: "merida",
+        BMC: "bmc",
+        Shimano: "shimano",
+        Sram: "sram",
+        Java: "java",
+        永久: "永久",
+        Giant: "捷安特",
+        凤凰:"凤凰"
+      },
+    };
   },
   computed: {
     // 计算可用的品牌列表（仅显示当前商品中实际存在的品牌）
     availableBrands() {
-      const brands = new Set()
-      this.originalGoods.forEach(item => {
+      const brands = new Set();
+      this.originalGoods.forEach((item) => {
         for (const [brand, keyword] of Object.entries(this.brandKeywords)) {
           if (item.name.toLowerCase().includes(keyword)) {
-            brands.add(brand)
-            break
+            brands.add(brand);
+            break;
           }
         }
-      })
-      return Array.from(brands)
-    }
+      });
+      return Array.from(brands);
+    },
   },
   created() {
-    this.categoryId = this.$route.query.id
-    this.loadGoods()
+    this.categoryId = this.$route.query.id;
+    this.loadGoods();
   },
   methods: {
     loadGoods() {
-      this.$request.get('/goods/selectByTypeId', {
-        params: {
-          id: this.categoryId
-        }
-      }).then(res => {
-        if (res.code === '200') {
-          this.goods = res.data
-          this.originalGoods = [...res.data]
-          this.filteredGoods = [...this.goods]
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
-    },
-
-    isImageUrl(str) {
-      if (!str) return false;
-      return str.match(/\.(jpeg|jpg|gif|png)$/) != null || 
-             str.startsWith('http') || 
-             str.startsWith('data:image');
+      this.$request
+        .get("/goods/selectByTypeId", {
+          params: {
+            id: this.categoryId,
+          },
+        })
+        .then((res) => {
+          if (res.code === "200") {
+            this.goods = res.data;
+            this.originalGoods = [...res.data];
+            this.filteredGoods = [...this.goods];
+          } else {
+            this.$message.error(res.msg);
+          }
+        });
     },
 
     handleSearch() {
       if (!this.searchKeyword.trim()) {
-        this.goods = [...this.originalGoods]
-        this.handleFilter()
-        return
+        this.goods = [...this.originalGoods];
+        this.handleFilter();
+        return;
       }
-      
-      this.goods = this.originalGoods.filter(item => 
+
+      this.goods = this.originalGoods.filter((item) =>
         item.name.toLowerCase().includes(this.searchKeyword.toLowerCase())
-      )
-      this.handleFilter()
+      );
+      this.handleFilter();
     },
 
     handleFilter() {
-      let filtered = [...this.goods]
+      let filtered = [...this.goods];
 
       // 价格筛选
-      filtered = filtered.filter(item => 
-        item.price >= this.priceRange[0] && item.price <= this.priceRange[1]
-      )
+      filtered = filtered.filter(
+        (item) =>
+          item.price >= this.priceRange[0] && item.price <= this.priceRange[1]
+      );
 
       // 品牌筛选
       if (this.selectedBrands.length > 0) {
-        filtered = filtered.filter(item => {
-          const itemName = item.name.toLowerCase()
-          return this.selectedBrands.some(brand => 
+        filtered = filtered.filter((item) => {
+          const itemName = item.name.toLowerCase();
+          return this.selectedBrands.some((brand) =>
             itemName.includes(this.brandKeywords[brand])
-          )
-        })
+          );
+        });
       }
 
       // 排序
       switch (this.sortBy) {
-        case 'priceAsc':
-          filtered.sort((a, b) => a.price - b.price)
-          break
-        case 'priceDesc':
-          filtered.sort((a, b) => b.price - a.price)
-          break
+        case "priceAsc":
+          filtered.sort((a, b) => a.price - b.price);
+          break;
+        case "priceDesc":
+          filtered.sort((a, b) => b.price - a.price);
+          break;
         default:
-          break
+          break;
       }
 
-      this.filteredGoods = filtered
+      this.filteredGoods = filtered;
     },
 
     resetFilters() {
-      this.priceRange = [0, 50000]
-      this.selectedBrands = []
-      this.sortBy = 'default'
-      this.searchKeyword = ''
-      this.goods = [...this.originalGoods]
-      this.filteredGoods = [...this.goods]
+      this.priceRange = [0, 50000];
+      this.selectedBrands = [];
+      this.sortBy = "default";
+      this.searchKeyword = "";
+      this.goods = [...this.originalGoods];
+      this.filteredGoods = [...this.goods];
     },
 
     navTo(url) {
-      location.href = url
-    }
-  }
-}
+      location.href = url;
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -268,13 +271,13 @@ export default {
 }
 
 .search-box :deep(.el-input__inner):focus {
-  border-color: #04BF04;
+  border-color: #04bf04;
   box-shadow: 0 0 0 2px rgba(4, 191, 4, 0.1);
 }
 
 .search-box :deep(.el-input-group__append) {
-  background: #04BF04;
-  border-color: #04BF04;
+  background: #04bf04;
+  border-color: #04bf04;
   color: white;
   border-top-right-radius: 25px;
   border-bottom-right-radius: 25px;
@@ -421,17 +424,6 @@ export default {
   text-overflow: ellipsis;
 }
 
-.goods-desc {
-  margin: 8px 0;
-  font-size: 14px;
-  color: #666;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  height: 40px;
-}
-
 .price {
   color: #ff5000;
   font-size: 18px;
@@ -460,11 +452,11 @@ export default {
   .content-area {
     flex-direction: column;
   }
-  
+
   .filter-sidebar {
     width: 100%;
   }
-  
+
   .filter-section :deep(.el-checkbox-group),
   .filter-section :deep(.el-radio-group) {
     flex-direction: row;
@@ -477,20 +469,20 @@ export default {
   .container {
     padding: 0 10px;
   }
-  
+
   .goods-grid {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 10px;
   }
-  
+
   .goods-info {
     padding: 10px;
   }
-  
+
   .goods-info h3 {
     font-size: 14px;
   }
-  
+
   .price {
     font-size: 16px;
   }

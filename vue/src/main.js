@@ -11,8 +11,9 @@ Vue.config.productionTip = false
 
 Vue.prototype.$request = request
 Vue.prototype.$baseUrl = process.env.VUE_APP_BASEURL
+Vue.prototype.$bus = new Vue();
 
-Vue.use(ElementUI, {size: "small"})
+Vue.use(ElementUI, { size: "small" })
 
 new Vue({
     router,

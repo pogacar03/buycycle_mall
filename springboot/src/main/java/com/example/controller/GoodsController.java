@@ -66,11 +66,11 @@ public class GoodsController {
     }
 
 
-@GetMapping("/selectTop15")
-public Result selectTop15() {
-    List<Goods> list = goodsService.selectTop15();
-    return Result.success(list);
-}
+    @GetMapping("/selectTop15")
+    public Result selectTop15() {
+        List<Goods> list = goodsService.selectTop15();
+        return Result.success(list);
+    }
     /**
      * 查询所有
      */

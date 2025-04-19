@@ -27,7 +27,7 @@ public class WebConfig implements  WebMvcConfigurer {
                 .excludePathPatterns("/comment/selectByGoodsId/**")
                 .excludePathPatterns("/ai/test")// 添加AI测试接口到白名单
                 .excludePathPatterns("/ai/ask")// 添加AI问答接口到白名单
-
+                .excludePathPatterns("/return/page") // 临时允许直接访问，依赖于参数中的businessId
         ;
     }
 }

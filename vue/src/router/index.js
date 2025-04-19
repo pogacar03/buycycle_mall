@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 // 解决导航栏或者底部导航tabBar中的vue-router在3.0版本以上频繁点击菜单报错的问题。
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (location) {
+VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
@@ -14,7 +14,7 @@ const routes = [
     path: '/',
     name: 'Manager',
     component: () => import('../views/Manager.vue'),
-    redirect:'/front/home',
+    redirect: '/front/home',
     children: [
       { path: '403', name: 'NoAuth', meta: { name: '无权限' }, component: () => import('../views/manager/403') },
       { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/manager/Home') },
@@ -29,6 +29,7 @@ const routes = [
       { path: 'goods', name: 'Goods', meta: { name: '商品信息' }, component: () => import('../views/manager/Goods') },
       { path: 'orders', name: 'Orders', meta: { name: '订单管理' }, component: () => import('../views/manager/Orders') },
       { path: 'comment', name: 'Comment', meta: { name: '评论管理' }, component: () => import('../views/manager/Comment') },
+      { path: '/return', name: 'Return', meta: { name: '退换货管理' }, component: () => import('@/views/manager/Return.vue') },
     ]
   },
   {
@@ -46,6 +47,11 @@ const routes = [
       { path: 'cart', name: 'Cart', meta: { name: '我的购物车' }, component: () => import('../views/front/Cart') },
       { path: 'orders', name: 'Orders', meta: { name: '我的订单' }, component: () => import('../views/front/Orders') },
       { path: 'search', name: 'Search', meta: { name: '搜索页面' }, component: () => import('../views/front/Search') },
+      {
+        path: 'return/apply',
+        name: 'ReturnApply',
+        component: () => import('../views/front/ReturnApply.vue')
+      },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },
@@ -59,23 +65,26 @@ const router = new VueRouter({
   routes
 })
 
-// 注：不需要前台的项目，可以注释掉该路由守卫
 // 路由守卫
-// router.beforeEach((to ,from, next) => {
-//   let user = JSON.parse(localStorage.getItem("xm-user") || '{}');
-//   if (to.path === '/') {
-//     if (user.role) {
-//       if (user.role === 'USER') {
-//         next('/front/home')
-//       } else {
-//         next('/home')
-//       }
-//     } else {
-//       next('/login')
-//     }
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  let user = JSON.parse(localStorage.getItem("xm-user") || '{}');
+  if (to.path === '/') {
+    if (user.role) {
+      if (user.role === 'USER') {
+        next('/front/home');
+      } else {
+        next('/home');
+      }
+    } else {
+      next('/login');
+    }
+  } else if (to.path === '/home' && user.role === 'USER') {
+    next('/front/home');
+  } else if (to.path === '/front/home' && user.role !== 'USER') {
+    next('/home');
+  } else {
+    next();
+  }
+});
 
 export default router

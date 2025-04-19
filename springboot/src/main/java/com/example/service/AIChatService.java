@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AIChatService {
@@ -121,10 +123,21 @@ public class AIChatService {
     /**
      * 检查是否在询问价格范围内的商品
      */
+    // private boolean isPriceRangeQuery(String question) {
+    // // 简化正则表达式，使其能更容易匹配价格范围
+    // String regex = ".*?(\\d+)\\s*(到|至|-|~)\\s*(\\d+).*";
+    // boolean matches = question.matches(regex);
+    // logger.info("价格范围检测: '{}' 是否匹配: {}", question, matches);
+    // return matches;
+    // }
+
     private boolean isPriceRangeQuery(String question) {
         // 简化正则表达式，使其能更容易匹配价格范围
         String regex = ".*?(\\d+)\\s*(到|至|-|~)\\s*(\\d+).*";
-        boolean matches = question.matches(regex);
+        // 使用 Pattern.DOTALL 标志编译正则表达式
+        Pattern pattern = Pattern.compile(regex, Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(question);
+        boolean matches = matcher.find();
         logger.info("价格范围检测: '{}' 是否匹配: {}", question, matches);
         return matches;
     }
@@ -176,12 +189,19 @@ public class AIChatService {
             if (goodsList.isEmpty()) {
                 prompt.append("很抱歉，我们目前没有价格在这个范围内的商品。请问您有其他价格区间的需求吗？");
             } else {
-                prompt.append("以下是我们平台上价格在这个范围内的商品：\n\n");
+                prompt.append("以下是我们平台上价格在这个范围内的商品：<br><br>");
 
                 for (Goods goods : goodsList) {
-                    prompt.append("- 名称：").append(goods.getName()).append("\n");
-                    prompt.append("  价格：").append(goods.getPrice()).append("元\n");
-                    prompt.append("  描述：").append(goods.getDescription()).append("\n\n");
+                    prompt.append("<div style='margin-bottom: 20px;'>");
+                    prompt.append("<strong>名称：</strong>").append(goods.getName()).append("<br>");
+                    prompt.append("<strong>价格：</strong>").append(goods.getPrice()).append("元<br>");
+                    prompt.append("<strong>描述：</strong>").append(goods.getDescription()).append("<br>");
+                    prompt.append("<a href='http://localhost:8080/front/detail?id=").append(goods.getId())
+                            .append("' target='_blank'>"); // 使用商品ID构建链接
+                    prompt.append("<img src='").append(goods.getImg()).append("' alt='").append(goods.getName())
+                            .append("' style='width: 100px; height: auto;'><br>");
+                    prompt.append("点击查看商品</a>");
+                    prompt.append("</div><br>");
                 }
 
                 prompt.append("请根据用户的问题，推荐合适的商品，并解释推荐理由。");

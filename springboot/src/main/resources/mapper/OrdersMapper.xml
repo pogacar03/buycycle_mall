@@ -5,12 +5,13 @@
 <mapper namespace="com.example.mapper.OrdersMapper">
 
     <sql id="Base_Column_List">
-        id,user_id,business_id,goods_id,num,price,address_id,status,order_id
+        id,user_id,business_id,goods_id,num,price,address_id,status,order_id,return_status
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Orders">
         select orders.*, business.name as businessName, goods.img as goodsImg, goods.name as goodsName, goods.price as goodsPrice, goods.unit as goodsUnit,
-        address.username as username, address.useraddress as useraddress, address.phone as phone
+        address.username as username, address.useraddress as useraddress, address.phone as phone,
+        orders.return_status as returnStatus
         from orders
         left join business on orders.business_id = business.id
         left join goods on orders.goods_id = goods.id
@@ -25,6 +26,7 @@
             <if test="addressId != null"> and address_id = #{addressId}</if>
             <if test="status != null"> and status = #{status}</if>
             <if test="orderId != null"> and order_id = #{orderId}</if>
+            <if test="returnStatus != null"> and return_status = #{returnStatus}</if>
         </where>
     </select>
 
@@ -52,6 +54,7 @@
             <if test="addressId != null">address_id,</if>
             <if test="status != null">status,</if>
             <if test="orderId != null">order_id,</if>
+            <if test="returnStatus != null">return_status,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -63,6 +66,7 @@
             <if test="addressId != null">#{addressId},</if>
             <if test="status != null">#{status},</if>
             <if test="orderId != null">#{orderId},</if>
+            <if test="returnStatus != null">#{returnStatus},</if>
         </trim>
     </insert>
 
@@ -93,8 +97,126 @@
             <if test="orderId != null">
                 order_id = #{orderId},
             </if>
+            <if test="returnStatus != null">
+                return_status = #{returnStatus},
+            </if>
         </set>
         where id = #{id}
     </update>
-
+    <select id="selectByOrderId" resultType="com.example.entity.Orders">
+        SELECT
+            o.*,
+            g.name as goodsName,
+            g.img as goodsImg,
+            g.price as goodsPrice,
+            g.unit as goodsUnit
+        FROM orders o
+                 LEFT JOIN goods g ON o.goods_id = g.id
+        WHERE o.order_id = #{orderId}
+    </select>
+    <!-- 更新订单的退货状态 -->
+    <update id="updateReturnStatus">
+        UPDATE orders
+        SET return_status = #{returnStatus}
+        WHERE order_id = #{orderId}
+    </update>
+    <!-- 在 OrdersMapper.xml 中，确保 selectPage 查询包含 return_status 字段 -->
+    <select id="selectPageByUserId" resultType="com.example.entity.Orders">
+        SELECT orders.*,
+               business.name as businessName,
+               goods.img as goodsImg,
+               goods.name as goodsName,
+               goods.price as goodsPrice,
+               goods.unit as goodsUnit,
+               address.username as username,
+               address.useraddress as useraddress,
+               address.phone as phone,
+               orders.return_status as returnStatus
+        FROM orders
+                 LEFT JOIN business ON orders.business_id = business.id
+                 LEFT JOIN goods ON orders.goods_id = goods.id
+                 LEFT JOIN address ON orders.address_id = address.id
+        WHERE orders.user_id = #{userId}
+        ORDER BY orders.id DESC
+    </select>
+    <select id="selectByUserId" resultType="java.util.Map">
+        SELECT o.*, g.name as goodsName, g.img as goodsImg, g.price as goodsPrice, g.unit as goodsUnit,
+               b.name as businessName, b.id as businessId,
+               a.username, a.useraddress, a.phone,
+               o.return_status as returnStatus
+        FROM orders o
+                 LEFT JOIN goods g ON o.goods_id = g.id
+                 LEFT JOIN business b ON g.business_id = b.id
+                 LEFT JOIN address a ON o.address_id = a.id
+        WHERE o.user_id = #{userId}
+        ORDER BY o.id DESC
+    </select>
+    <select id="selectByBusinessId" resultType="java.util.Map">
+        SELECT o.*, g.name as goodsName, g.img as goodsImg, g.price as goodsPrice, g.unit as goodsUnit,
+               u.username as username, u.name as userName,
+               a.username as addressName, a.useraddress as useraddress, a.phone as phone,
+               o.return_status as returnStatus
+        FROM orders o
+                 LEFT JOIN goods g ON o.goods_id = g.id
+                 LEFT JOIN user u ON o.user_id = u.id
+                 LEFT JOIN address a ON o.address_id = a.id
+        WHERE g.business_id = #{businessId}
+        ORDER BY o.id DESC
+    </select>
+    <select id="selectPageForBusiness" resultType="com.example.entity.Orders">
+        SELECT o.*,
+               g.name as goodsName, g.img as goodsImg, g.price as goodsPrice, g.unit as goodsUnit,
+               u.username as username, u.name as userName,
+               a.username as addressName, a.useraddress as useraddress, a.phone as phone,
+               o.return_status as returnStatus
+        FROM orders o
+                 LEFT JOIN goods g ON o.goods_id = g.id
+                 LEFT JOIN user u ON o.user_id = u.id
+                 LEFT JOIN address a ON o.address_id = a.id
+        WHERE g.business_id = #{businessId}
+        ORDER BY o.id DESC
+    </select>
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(0) FROM orders o
+        LEFT JOIN goods g ON o.goods_id = g.id
+        LEFT JOIN business b ON g.business_id = b.id
+        LEFT JOIN address a ON o.address_id = a.id
+        <where>
+            <if test="role != 'ADMIN'">
+                <if test="role == 'USER'">
+                    AND o.user_id = #{userId}
+                </if>
+                <if test="role == 'BUSINESS'">
+                    AND g.business_id = #{userId}
+                </if>
+            </if>
+            <if test="name != null and name != ''">
+                AND g.name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+    <select id="selectPage" resultType="com.example.entity.Orders">
+        SELECT o.*, g.name as goodsName, g.img as goodsImg, g.price as goodsPrice, g.unit as goodsUnit, 
+               b.name as businessName, b.id as businessId, 
+               a.username, a.phone, a.useraddress as useraddress,
+               o.return_status as returnStatus
+        FROM orders o
+        LEFT JOIN goods g ON o.goods_id = g.id
+        LEFT JOIN business b ON g.business_id = b.id
+        LEFT JOIN address a ON o.address_id = a.id
+        <where>
+            <if test="role != 'ADMIN'">
+                <if test="role == 'USER'">
+                    AND o.user_id = #{userId}
+                </if>
+                <if test="role == 'BUSINESS'">
+                    AND g.business_id = #{userId}
+                </if>
+            </if>
+            <if test="name != null and name != ''">
+                AND g.name like concat('%', #{name}, '%')
+            </if>
+        </where>
+        ORDER BY o.id DESC
+    </select>
 </mapper>
