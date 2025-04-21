@@ -52,6 +52,11 @@ const routes = [
         name: 'ReturnApply',
         component: () => import('../views/front/ReturnApply.vue')
       },
+      {
+        path: 'payment/success',
+        name: 'PaymentSuccess',
+        component: () => import('../views/front/PaymentSuccess.vue')
+      },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

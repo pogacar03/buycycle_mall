@@ -108,4 +108,22 @@ public class OrdersService {
         List<Map<String, Object>> orders = ordersMapper.selectByBusinessId(businessId);
         return new PageInfo<>(orders);
     }
+
+    /**
+     * 更新订单支付状态
+     */
+    public boolean updatePayStatus(String orderId, String payStatus) {
+        try {
+            Orders order = ordersMapper.selectByOrderId(orderId);
+            if (order != null) {
+                order.setPayStatus(payStatus);
+                ordersMapper.updateById(order);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

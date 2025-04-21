@@ -5,7 +5,7 @@ import { Message } from 'element-ui'  // 添加 Element UI 的消息提示
 // 创建可一个新的axios对象
 const request = axios.create({
     baseURL: process.env.VUE_APP_BASEURL,   // 后端的接口地址  ip:port
-    timeout: 30000                          // 30s请求超时
+    timeout: 30000                        // 减少为10s请求超时
 })
 
 // request 拦截器
@@ -60,6 +60,12 @@ request.interceptors.response.use(
     },
     error => {
         console.error('response error: ' + error) // for debug
+
+        // 处理超时错误
+        if (error.message.includes('timeout')) {
+            Message.error('请求超时，请检查网络连接')
+            return Promise.reject(error)
+        }
 
         // 处理网络错误
         if (error.response) {

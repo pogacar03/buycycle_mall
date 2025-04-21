@@ -1,5 +1,8 @@
 <template>
   <div class="main-content">
+    <!-- 添加导航栏 -->
+    <nav-bar></nav-bar>
+
     <div class="container">
       <!-- 搜索框 -->
       <div class="search-container">
@@ -105,8 +108,13 @@
 </template>
 
 <script>
+import NavBar from "@/component/NavBar.vue";
+
 export default {
   name: "Type",
+  components: {
+    NavBar,
+  },
   data() {
     return {
       categoryId: null,
@@ -132,7 +140,7 @@ export default {
         Java: "java",
         永久: "永久",
         Giant: "捷安特",
-        凤凰:"凤凰"
+        凤凰: "凤凰",
       },
     };
   },

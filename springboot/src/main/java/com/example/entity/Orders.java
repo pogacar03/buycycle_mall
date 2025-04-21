@@ -33,6 +33,8 @@ public class Orders implements Serializable {
 
     // 添加returnStatus字段
     private String returnStatus;
+    // 添加支付状态字段
+    private String payStatus; // 未支付、已支付、已取消
 
     public Integer getId() {
         return id;
@@ -185,5 +187,13 @@ public class Orders implements Serializable {
 
     public void setReturnStatus(String returnStatus) {
         this.returnStatus = returnStatus;
+    }
+
+    public String getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(String payStatus) {
+        this.payStatus = payStatus;
     }
 }

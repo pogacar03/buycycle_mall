@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.OrdersMapper">
 
     <sql id="Base_Column_List">
-        id,user_id,business_id,goods_id,num,price,address_id,status,order_id,return_status
+        id,user_id,business_id,goods_id,num,price,address_id,status,order_id,return_status,pay_status
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Orders">
@@ -55,6 +55,7 @@
             <if test="status != null">status,</if>
             <if test="orderId != null">order_id,</if>
             <if test="returnStatus != null">return_status,</if>
+            <if test="payStatus != null">pay_status,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -67,6 +68,7 @@
             <if test="status != null">#{status},</if>
             <if test="orderId != null">#{orderId},</if>
             <if test="returnStatus != null">#{returnStatus},</if>
+            <if test="payStatus != null">#{payStatus},</if>
         </trim>
     </insert>
 
@@ -99,6 +101,9 @@
             </if>
             <if test="returnStatus != null">
                 return_status = #{returnStatus},
+            </if>
+            <if test="payStatus != null">
+                pay_status = #{payStatus},
             </if>
         </set>
         where id = #{id}

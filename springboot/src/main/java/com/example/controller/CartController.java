@@ -17,14 +17,14 @@ import java.util.List;
 public class CartController {
 
     @Resource
-    private  CartService  cartService;
+    private CartService cartService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody  Cart  cart) {
-        cartService.add( cart);
+    public Result add(@RequestBody Cart cart) {
+        cartService.add(cart);
         return Result.success();
     }
 
@@ -50,8 +50,8 @@ public class CartController {
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody  Cart  cart) {
-        cartService.updateById( cart);
+    public Result updateById(@RequestBody Cart cart) {
+        cartService.updateById(cart);
         return Result.success();
     }
 
@@ -60,16 +60,16 @@ public class CartController {
      */
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
-        Cart  cart =  cartService.selectById(id);
-        return Result.success( cart);
+        Cart cart = cartService.selectById(id);
+        return Result.success(cart);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll( Cart  cart ) {
-        List< Cart> list =  cartService.selectAll( cart);
+    public Result selectAll(Cart cart) {
+        List<Cart> list = cartService.selectAll(cart);
         return Result.success(list);
     }
 
@@ -77,11 +77,13 @@ public class CartController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage( Cart  cart,
-                              @RequestParam(defaultValue = "1") Integer pageNum,
-                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo< Cart> page =  cartService.selectPage( cart, pageNum, pageSize);
+    public Result selectPage(Cart cart,
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Cart> page = cartService.selectPage(cart, pageNum, pageSize);
         return Result.success(page);
     }
+
+
 
 }

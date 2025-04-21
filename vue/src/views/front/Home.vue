@@ -1,5 +1,8 @@
 <template>
   <div class="main-content">
+    <!-- 添加导航栏 -->
+    <nav-bar></nav-bar>
+
     <div class="main-container">
       <div class="content-wrapper">
         <!-- 主题市场标题 -->
@@ -11,30 +14,48 @@
         <div class="main-content-area">
           <!-- 左侧分类菜单 -->
           <div class="category-menu">
-            <div class="category-item" v-for="item in typeData" :key="item.id" @click="navTo('/front/type?id=' + item.id)">
-              <span>{{item.name}}</span>
+            <div
+              class="category-item"
+              v-for="item in typeData"
+              :key="item.id"
+              @click="navTo('/front/type?id=' + item.id)"
+            >
+              <span>{{ item.name }}</span>
             </div>
           </div>
 
           <!-- 中间轮播区域 -->
           <div class="carousel-section">
             <!-- 顶部大轮播图 -->
-            <el-carousel height="300px" class="main-carousel" indicator-position="outside">
-              <el-carousel-item v-for="(item, index) in carousel_top" :key="index">
-                <img :src="item" alt="carousel">
+            <el-carousel
+              height="300px"
+              class="main-carousel"
+              indicator-position="outside"
+            >
+              <el-carousel-item
+                v-for="(item, index) in carousel_top"
+                :key="index"
+              >
+                <img :src="item" alt="carousel" />
               </el-carousel-item>
             </el-carousel>
-            
+
             <!-- 下方小轮播图 -->
             <div class="sub-carousel-container">
               <el-carousel height="200px" class="sub-carousel" :interval="4000">
-                <el-carousel-item v-for="(item, index) in carousel_left" :key="index">
-                  <img :src="item" alt="carousel">
+                <el-carousel-item
+                  v-for="(item, index) in carousel_left"
+                  :key="index"
+                >
+                  <img :src="item" alt="carousel" />
                 </el-carousel-item>
               </el-carousel>
               <el-carousel height="200px" class="sub-carousel" :interval="4500">
-                <el-carousel-item v-for="(item, index) in carousel_right" :key="index">
-                  <img :src="item" alt="carousel">
+                <el-carousel-item
+                  v-for="(item, index) in carousel_right"
+                  :key="index"
+                >
+                  <img :src="item" alt="carousel" />
                 </el-carousel-item>
               </el-carousel>
             </div>
@@ -43,20 +64,24 @@
           <!-- 右侧用户信息区 -->
           <div class="user-panel">
             <div class="user-info" v-if="user.username">
-              <img @click="navTo('/front/person')" :src="user.avatar" :alt="user.name">
-              <div class="welcome">Hi，{{user.name}}</div>
+              <img
+                @click="navTo('/front/person')"
+                :src="user.avatar"
+                :alt="user.name"
+              />
+              <div class="welcome">Hi，{{ user.name }}</div>
               <el-button type="text" class="logout-btn" @click="handleLogout">
                 <i class="el-icon-switch-button"></i> 退出登录
               </el-button>
             </div>
             <div class="user-info" v-else>
               <div class="login-tips">
-                <el-button type="primary" @click="navTo('/login')">登录</el-button>
+                <el-button type="primary" @click="navTo('/login')"
+                  >登录</el-button
+                >
                 <el-button @click="navTo('/register')">注册</el-button>
               </div>
             </div>
-
-            
 
             <div class="quick-actions">
               <div class="action-item" @click="navTo('/front/collect')">
@@ -86,12 +111,17 @@
             热卖商品
           </div>
           <div class="goods-grid">
-            <div v-for="item in goodsData" :key="item.id" class="goods-card" @click="navTo('/front/detail?id=' + item.id)">
+            <div
+              v-for="item in goodsData"
+              :key="item.id"
+              class="goods-card"
+              @click="navTo('/front/detail?id=' + item.id)"
+            >
               <div class="goods-img">
-                <img :src="item.img" :alt="item.name">
+                <img :src="item.img" :alt="item.name" />
               </div>
-              <h3>{{item.name}}</h3>
-              <div class="price">￥{{item.price}} / {{item.unit}}</div>
+              <h3>{{ item.name }}</h3>
+              <div class="price">￥{{ item.price }} / {{ item.unit }}</div>
             </div>
           </div>
         </div>
@@ -103,12 +133,17 @@
             猜你喜欢
           </div>
           <div class="goods-grid">
-            <div v-for="item in recommendData" :key="item.id" class="goods-card" @click="navTo('/front/detail?id=' + item.id)">
+            <div
+              v-for="item in recommendData"
+              :key="item.id"
+              class="goods-card"
+              @click="navTo('/front/detail?id=' + item.id)"
+            >
               <div class="goods-img">
-                <img :src="item.img" :alt="item.name">
+                <img :src="item.img" :alt="item.name" />
               </div>
-              <h3>{{item.name}}</h3>
-              <div class="price">￥{{item.price}} / {{item.unit}}</div>
+              <h3>{{ item.name }}</h3>
+              <div class="price">￥{{ item.price }} / {{ item.unit }}</div>
             </div>
           </div>
         </div>
@@ -118,80 +153,96 @@
 </template>
 
 <script>
+import NavBar from "@/component/NavBar.vue";
+
 export default {
-  name: 'Home',
+  name: "Home",
+  components: {
+    NavBar,
+  },
   data() {
     return {
-      user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+      user: JSON.parse(localStorage.getItem("xm-user") || "{}"),
       typeData: [],
       goodsData: [],
       recommendData: [],
       carousel_top: [
-        require('@/assets/imgs/carousel-1.png'),
-        require('@/assets/imgs/carousel-2.png'),
-        require('@/assets/imgs/carousel-9.png'),
+        require("@/assets/imgs/carousel-1.png"),
+        require("@/assets/imgs/carousel-2.png"),
+        require("@/assets/imgs/carousel-9.png"),
       ],
       carousel_left: [
-        require('@/assets/imgs/carousel-3.png'),
-        require('@/assets/imgs/carousel-4.png'),
-        require('@/assets/imgs/carousel-5.png'),
+        require("@/assets/imgs/carousel-3.png"),
+        require("@/assets/imgs/carousel-4.png"),
+        require("@/assets/imgs/carousel-5.png"),
       ],
       carousel_right: [
-        require('@/assets/imgs/carousel-6.png'),
-        require('@/assets/imgs/carousel-7.png'),
-        require('@/assets/imgs/carousel-8.png'),
+        require("@/assets/imgs/carousel-6.png"),
+        require("@/assets/imgs/carousel-7.png"),
+        require("@/assets/imgs/carousel-8.png"),
       ],
-    }
+    };
   },
   mounted() {
-    this.loadType()
-    this.loadGoods()
-    this.loadRecommend()
+    this.loadType();
+    this.loadGoods();
+    this.loadRecommend();
   },
   methods: {
     loadRecommend() {
-      this.$request.get('/goods/recommend').then(res => {
-        if (res.code === '200') {
-          this.recommendData = res.data
-        } else {
-          this.$message.error(res.msg)
-        }
-      })
+      console.log("正在加载推荐数据...");
+      this.$request
+        .get("/goods/recommend")
+        .then((res) => {
+          console.log("推荐接口返回数据:", res);
+          if (res.code === "200") {
+            this.recommendData = res.data;
+            console.log("处理后的推荐数据:", this.recommendData);
+          } else {
+            this.$message.error(res.msg);
+          }
+        })
+        .catch((error) => {
+          console.error("加载推荐数据出错:", error);
+          this.$message.error("加载推荐数据失败，请刷新页面重试");
+        });
     },
     loadType() {
-      this.$request.get('/type/selectAll').then(res => {
-        if (res.code === '200') {
-          this.typeData = res.data
+      this.$request.get("/type/selectAll").then((res) => {
+        if (res.code === "200") {
+          this.typeData = res.data;
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
     loadGoods() {
-      this.$request.get('/goods/selectTop15').then(res => {
-        if (res.code === '200') {
-          this.goodsData = res.data
+      this.$request.get("/goods/selectTop15").then((res) => {
+        if (res.code === "200") {
+          this.goodsData = res.data;
         } else {
-          this.$message.error(res.msg)
+          this.$message.error(res.msg);
         }
-      })
+      });
     },
     handleLogout() {
-      this.$confirm('确认退出登录吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        localStorage.removeItem('xm-user')
-        this.$message.success('退出成功')
-        this.navTo('/login')
-      }).catch(() => {})
+      this.$confirm("确认退出登录吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          localStorage.removeItem("xm-user");
+          this.$message.success("退出成功");
+          this.navTo("/login");
+        })
+        .catch(() => {});
     },
     navTo(url) {
-      location.href = url
-    }
-  }
-}
+      location.href = url;
+    },
+  },
+};
 </script>
 <style scoped>
 .main-content {
@@ -252,7 +303,7 @@ export default {
 
 .category-item:hover {
   background: #f0f2f5;
-  color: #04BF04;
+  color: #04bf04;
 }
 
 .carousel-section {
@@ -372,7 +423,7 @@ export default {
 
 .action-item:hover {
   background: #f0f2f5;
-  color: #04BF04;
+  color: #04bf04;
 }
 
 .action-item i {
@@ -453,18 +504,18 @@ export default {
   .main-content-area {
     flex-direction: column;
   }
-  
+
   .category-menu {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
   }
-  
+
   .user-panel {
     width: 100%;
   }
-  
+
   .quick-actions {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -474,11 +525,11 @@ export default {
   .sub-carousel-container {
     flex-direction: column;
   }
-  
+
   .quick-actions {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .goods-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
