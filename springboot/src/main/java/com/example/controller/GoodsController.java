@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 公告信息表前端操作接口
@@ -65,12 +66,12 @@ public class GoodsController {
         return Result.success(goods);
     }
 
-
     @GetMapping("/selectTop15")
     public Result selectTop15() {
         List<Goods> list = goodsService.selectTop15();
         return Result.success(list);
     }
+
     /**
      * 查询所有
      */
@@ -80,35 +81,65 @@ public class GoodsController {
         List<Goods> list = goodsService.selectAll(goods);
         return Result.success(list);
     }
+
     @GetMapping("/selectByTypeId")
     public Result selectByTypeId(@RequestParam Integer id) {
         List<Goods> list = goodsService.selectByTypeId(id);
         return Result.success(list);
     }
+
     @GetMapping("/selectByName")
     public Result selectByName(@RequestParam String name) {
         List<Goods> list = goodsService.selectByName(name);
         return Result.success(list);
     }
+
     @GetMapping("/selectByBusinessId")
     public Result selectByBusinessId(@RequestParam Integer id) {
         List<Goods> list = goodsService.selectByBusinessId(id);
         return Result.success(list);
     }
+
     @GetMapping("/recommend")
-    public Result recommend(){
+    public Result recommend() {
         List<Goods> list = goodsService.recommend();
         return Result.success(list);
     }
+
     /**
      * 分页查询
      */
     @GetMapping("/selectPage")
     public Result selectPage(Goods goods,
-                             @RequestParam(defaultValue = "1") Integer pageNum,
-                             @RequestParam(defaultValue = "10") Integer pageSize) {
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Goods> page = goodsService.selectPage(goods, pageNum, pageSize);
         return Result.success(page);
+    }
+
+    @PutMapping("/updateStock")
+    public Result updateStock(@RequestBody Map<String, Object> params) {
+        try {
+            Integer goodsId = (Integer) params.get("goodsId");
+            Integer stock = (Integer) params.get("stock");
+
+            if (goodsId == null || stock == null) {
+                return Result.error("400", "参数错误");
+            }
+
+            Goods goods = goodsService.selectById(goodsId);
+            if (goods == null) {
+                return Result.error("404", "商品不存在");
+            }
+
+            goods.setStock(stock);
+            goodsService.updateById(goods);
+
+            return Result.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("500", "系统异常: " + e.getMessage());
+        }
     }
 
 }

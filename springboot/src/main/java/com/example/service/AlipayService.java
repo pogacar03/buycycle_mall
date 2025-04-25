@@ -6,6 +6,8 @@ import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.response.AlipayTradePagePayResponse;
+import com.example.entity.Goods;
+import com.example.entity.Orders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ public class AlipayService {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @Value("${alipay.returnUrl}")
     private String returnUrl;
@@ -81,6 +86,30 @@ public class AlipayService {
      * 处理支付成功的订单
      */
     public boolean handlePaymentSuccess(String orderId) {
-        return ordersService.updatePayStatus(orderId, "已支付");
+        try {
+            // 获取订单信息
+            Orders order = ordersService.ordersMapper.selectByOrderId(orderId);
+            if (order != null) {
+                // 检查订单状态，避免重复处理
+                if (!"已支付".equals(order.getPayStatus())) {
+                    // 更新订单状态为已支付和待发货
+                    order.setPayStatus("已支付");
+                    order.setStatus("待发货");
+                    ordersService.ordersMapper.updateById(order);
+
+                    // 减少商品库存
+                    Goods goods = goodsService.selectById(order.getGoodsId());
+                    if (goods != null) {
+                        // 减少库存数量
+                        goodsService.updateStock(order.getGoodsId(), -order.getNum());
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

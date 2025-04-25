@@ -26,6 +26,17 @@ public class Goods implements Serializable {
     private  String typeName;
     private  String businessName;
 
+    /** 库存数量 */
+    private Integer stock;
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
     public String getBusinessName() {
         return businessName;
     }

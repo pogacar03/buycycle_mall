@@ -1,8 +1,8 @@
 <template>
   <div class="main-content">
-    <!-- 添加导航栏 -->
+     <!-- 添加导航栏 -->
     <nav-bar></nav-bar>
-
+    
     <el-card style="width: 50%; margin: 30px auto">
       <div style="text-align: right; margin-bottom: 20px">
         <el-button type="primary" @click="updatePassword">修改密码</el-button>
@@ -10,10 +10,10 @@
       <el-form :model="user" label-width="80px" style="padding-right: 20px">
         <div style="margin: 15px; text-align: center">
           <el-upload
-            class="avatar-uploader"
-            :action="$baseUrl + '/files/upload'"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
+              class="avatar-uploader"
+              :action="$baseUrl + '/files/upload'"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
           >
             <img v-if="user.avatar" :src="user.avatar" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -115,7 +115,7 @@ export default {
         confirmPassword: [
           { validator: validatePassword, required: true, trigger: "blur" },
         ],
-      },
+  },
     };
   },
   created() {},

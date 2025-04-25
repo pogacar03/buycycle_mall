@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import com.example.exception.CustomException;
 
 /**
  * 收藏前端操作接口
@@ -35,8 +36,15 @@ public class OrdersController {
      */
     @PostMapping("/add")
     public Result add(@RequestBody Orders orders) {
-        ordersService.add(orders);
-        return Result.success();
+        try {
+            ordersService.add(orders);
+            return Result.success();
+        } catch (CustomException e) {
+            return Result.error(e.getCode(), e.getMsg());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("500", "下单失败：" + e.getMessage());
+        }
     }
 
     /**

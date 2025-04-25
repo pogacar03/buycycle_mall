@@ -449,31 +449,24 @@ export default {
         loading.close();
         this.$message.success(`已成功支付￥${amount}，订单状态已更新`);
 
-        // 查找并更新对应订单的状态
-        const currentOrder = this.ordersData.find(
-          (order) => order.orderId === orderId
-        );
-        if (currentOrder) {
-          currentOrder.status = "待发货";
-          currentOrder.payStatus = "已支付";
-
-          // 向后端发送更新请求
-          this.$request
-            .put("/orders/update", {
-              id: currentOrder.id,
-              status: "待发货",
-              payStatus: "已支付",
-            })
-            .then((res) => {
-              if (res.code === "200") {
-                console.log("订单状态已更新");
-                // 刷新订单列表
-                this.loadOrders(this.pageNum);
-              } else {
-                this.$message.warning("订单状态更新失败，请刷新页面");
-              }
-            });
-        }
+        // 使用支付API处理支付成功
+        this.$request
+          .post("/api/alipay/simulate-payment", {
+            orderId: orderId,
+          })
+          .then((res) => {
+            if (res.code === "200") {
+              console.log("订单状态和库存已更新");
+              // 刷新订单列表
+              this.loadOrders(this.pageNum);
+            } else {
+              this.$message.warning("订单状态更新失败：" + res.msg);
+            }
+          })
+          .catch((err) => {
+            console.error("模拟支付请求失败:", err);
+            this.$message.error("支付处理失败");
+          });
       }, 1500);
     },
 

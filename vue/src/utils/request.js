@@ -52,8 +52,24 @@ request.interceptors.response.use(
 
         // 处理其他错误
         if (res.code !== 200 && res.code !== '200') {
-            Message.error(res.msg || '系统错误')
-            return Promise.reject(res)
+            // 根据错误码显示具体的错误信息
+            const errorMessages = {
+                '5001': '用户名已存在',
+                '5002': '用户未登录',
+                '5003': '账号或密码错误',
+                '5004': '用户不存在',
+                '5005': '原密码输入错误',
+                '5007': '角色不存在',
+                '5008': '库存不足',
+                '4001': '参数缺失，请检查输入',
+                '400': '参数异常，请检查输入',
+                '500': '系统异常，请稍后重试'
+            };
+
+            const errorMessage = errorMessages[res.code] || res.msg || '系统错误';
+            console.log('错误响应:', res.code, errorMessage);
+            Message.error(errorMessage);
+            return Promise.reject(res);
         }
 
         return res;
@@ -69,28 +85,44 @@ request.interceptors.response.use(
 
         // 处理网络错误
         if (error.response) {
+            const res = error.response.data;
+            console.log('错误状态:', error.response.status, '错误数据:', res);
+
+            // 根据错误码显示具体的错误信息
+            const errorMessages = {
+                '5001': '用户名已存在',
+                '5002': '用户未登录',
+                '5003': '账号或密码错误',
+                '5004': '用户不存在',
+                '5005': '原密码输入错误',
+                '5007': '角色不存在',
+                '5008': '库存不足',
+                '4001': '参数缺失，请检查输入',
+                '400': '参数异常，请检查输入',
+                '500': '系统异常，请稍后重试'
+            };
+
+            const errorMessage = errorMessages[res.code] || res.msg || '系统错误';
+            Message.error(errorMessage);
+
             switch (error.response.status) {
                 case 401:
-                    Message.error('登录已过期，请重新登录')
                     router.push('/login')
                     break
                 case 403:
-                    Message.error('没有权限访问')
                     break
                 case 404:
-                    Message.error('请求的资源不存在')
                     break
                 case 500:
-                    Message.error('服务器内部错误')
                     break
                 default:
-                    Message.error('网络错误：' + error.message)
+                    break
             }
+            return Promise.reject(error);
         } else {
-            Message.error('服务器无响应')
+            Message.error('网络错误，请检查网络连接');
+            return Promise.reject(error);
         }
-
-        return Promise.reject(error)
     }
 )
 

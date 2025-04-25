@@ -16,9 +16,11 @@ import javax.annotation.Resource;
 import javax.management.relation.Role;
 import java.lang.reflect.Executable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -245,12 +247,30 @@ public class GoodsService {
         if (recommendResult == null) {
             recommendResult = getRandomGoods(10);
         } else if (recommendResult.size() < 10) {
+            // 获取已推荐商品的ID集合，用于去重
+            Set<Integer> existingGoodsIds = recommendResult.stream()
+                    .map(Goods::getId)
+                    .collect(Collectors.toSet());
+
             int num = 10 - recommendResult.size();
-            List<Goods> list = getRandomGoods(num);
-            recommendResult.addAll(list);
+            // 获取更多的随机商品
+            List<Goods> randomGoods = getRandomGoods(num * 2);
+
+            // 过滤掉已经存在的商品ID
+            List<Goods> filteredRandomGoods = randomGoods.stream()
+                    .filter(g -> g != null && g.getId() != null && !existingGoodsIds.contains(g.getId()))
+                    .limit(num)
+                    .collect(Collectors.toList());
+
+            recommendResult.addAll(filteredRandomGoods);
         }
 
-        return recommendResult;
+        // 最后确保没有重复
+        return recommendResult.stream()
+                .filter(g -> g != null && g.getId() != null)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toMap(Goods::getId, g -> g, (g1, g2) -> g1),
+                        map -> new ArrayList<>(map.values())));
     }
 
     private List<Goods> getRandomGoods(int num) {
@@ -264,9 +284,28 @@ public class GoodsService {
         // 确保不超过可用的商品数
         num = Math.min(num, goods.size());
 
+        // 使用Set存储已选择的索引，避免重复选择
+        Set<Integer> selectedIndices = new HashSet<>();
+
+        // 尝试选择不重复的商品
         for (int i = 0; i < num; i++) {
             try {
-                int index = new Random().nextInt(goods.size());
+                // 尝试最多10次找到一个未被选择的索引
+                int maxAttempts = 10;
+                int attempt = 0;
+                int index;
+
+                do {
+                    index = new Random().nextInt(goods.size());
+                    attempt++;
+                } while (selectedIndices.contains(index) && attempt < maxAttempts);
+
+                // 如果尝试多次后仍找不到新索引，则跳过
+                if (selectedIndices.contains(index)) {
+                    continue;
+                }
+
+                selectedIndices.add(index);
                 Goods item = goods.get(index);
                 if (item != null) {
                     list.add(item);
@@ -277,5 +316,47 @@ public class GoodsService {
             }
         }
         return list;
+    }
+
+    /**
+     * 更新商品库存
+     * 
+     * @param goodsId  商品ID
+     * @param quantity 变更数量（正数增加，负数减少）
+     * @return 是否更新成功
+     */
+    public boolean updateStock(Integer goodsId, Integer quantity) {
+        try {
+            Goods goods = goodsMapper.selectById(goodsId);
+            if (goods == null) {
+                return false;
+            }
+
+            // 如果是减库存操作，检查库存是否足够
+            if (quantity < 0 && (goods.getStock() == null || goods.getStock() < Math.abs(quantity))) {
+                return false;
+            }
+
+            // 更新库存
+            Integer newStock = goods.getStock() == null ? quantity : goods.getStock() + quantity;
+            goods.setStock(newStock < 0 ? 0 : newStock);
+            goodsMapper.updateById(goods);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 检查商品库存是否充足
+     * 
+     * @param goodsId  商品ID
+     * @param quantity 需要的数量
+     * @return 是否充足
+     */
+    public boolean checkStock(Integer goodsId, Integer quantity) {
+        Goods goods = goodsMapper.selectById(goodsId);
+        return goods != null && goods.getStock() != null && goods.getStock() >= quantity;
     }
 }

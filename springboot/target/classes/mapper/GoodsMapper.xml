@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.GoodsMapper">
 
     <sql id="Base_Column_List">
-        id,name,description,img,price,unit,count,type_id,business_id
+        id,name,description,img,price,unit,count,type_id,business_id,stock
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Goods">
@@ -52,6 +52,7 @@
             <if test="count != null">count,</if>
             <if test="typeId != null">type_id,</if>
             <if test="businessId != null">business_id,</if>
+            <if test="stock != null">stock,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -63,6 +64,7 @@
             <if test="count != null">#{count},</if>
             <if test="typeId != null">#{typeId},</if>
             <if test="businessId != null">#{businessId},</if>
+            <if test="stock != null">#{stock},</if>
         </trim>
     </insert>
 
@@ -92,6 +94,9 @@
             </if>
             <if test="businessId != null">
                 business_id = #{businessId},
+            </if>
+            <if test="stock != null">
+                stock = #{stock},
             </if>
         </set>
         where id = #{id}

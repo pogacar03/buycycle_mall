@@ -1,8 +1,10 @@
 package com.example.controller;
 
 import com.example.common.Result;
+import com.example.entity.Orders;
 import com.example.entity.Return;
 import com.example.entity.User;
+import com.example.service.GoodsService;
 import com.example.service.ReturnService;
 import com.example.mapper.OrdersMapper;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,9 @@ public class ReturnController {
 
     @Resource
     private OrdersMapper ordersMapper;
+
+    @Resource
+    private GoodsService goodsService;
 
     @PostMapping("/apply")
     public Result apply(@RequestBody Map<String, Object> params, HttpServletRequest request) {
@@ -344,6 +349,14 @@ public class ReturnController {
             if (updated) {
                 // 更新订单的退货状态为已完成
                 updateOrderReturnStatus(returnOrder.getOrderId(), "2");
+
+                // 获取订单信息
+                Orders order = ordersMapper.selectByOrderId(returnOrder.getOrderId());
+                if (order != null) {
+                    // 恢复商品库存
+                    goodsService.updateStock(order.getGoodsId(), order.getNum());
+                }
+
                 return Result.success("操作成功");
             } else {
                 return Result.error("500", "更新失败");

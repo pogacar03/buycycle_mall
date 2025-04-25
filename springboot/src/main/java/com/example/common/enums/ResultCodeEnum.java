@@ -15,6 +15,8 @@ public enum ResultCodeEnum {
     USER_NOT_EXIST_ERROR("5004", "用户不存在"),
     PARAM_PASSWORD_ERROR("5005", "原密码输入错误"),
     COLLECT_ALREADY_ERROR("5006", "您已收藏过该商品"),
+    ROLE_NOT_EXIST("5007", "角色不存在"),
+    STOCK_NOT_ENOUGH("5008", "库存不足"),
     ;
 
     public String code;

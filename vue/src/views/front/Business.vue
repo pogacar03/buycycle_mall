@@ -174,9 +174,9 @@ export default {
         .then((res) => {
           if (res.code === "200") {
             this.businessData = res.data;
-          } else {
+        } else {
             this.$message.error(res.msg);
-          }
+        }
         });
     },
     loadGoods() {
@@ -185,9 +185,9 @@ export default {
         .then((res) => {
           if (res.code === "200") {
             this.goodsData = res.data;
-          } else {
+        } else {
             this.$message.error(res.msg);
-          }
+        }
         });
     },
     navTo(url) {

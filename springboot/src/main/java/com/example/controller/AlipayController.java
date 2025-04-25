@@ -104,4 +104,28 @@ public class AlipayController {
         }
         return params;
     }
+
+    /**
+     * 模拟支付功能
+     */
+    @PostMapping("/simulate-payment")
+    public Result simulatePayment(@RequestBody Map<String, String> params) {
+        try {
+            String orderId = params.get("orderId");
+            if (orderId == null || orderId.isEmpty()) {
+                return Result.error("400", "订单ID不能为空");
+            }
+
+            // 使用相同的支付成功处理逻辑
+            boolean success = alipayService.handlePaymentSuccess(orderId);
+            if (success) {
+                return Result.success("支付成功");
+            } else {
+                return Result.error("500", "支付处理失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error("500", "系统异常: " + e.getMessage());
+        }
+    }
 }

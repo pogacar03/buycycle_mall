@@ -10,5 +10,10 @@ module.exports = defineConfig({
           args[0].title = "管理系统";
           return args;
         })
+  },
+  devServer: {
+    client: {
+      overlay: false,
+    },
   }
 })
